@@ -1,0 +1,218 @@
+---------------------
+ GENERAL INFORMATION
+---------------------
+Title: 		README of the BRITE-DATA-REDUCTION-V3
+Author:		Kondrak Matthias
+Contact:	matthias.kondrak@uibk.ac.at
+Address:	University of Innsbruck, Institute of Astro and Particle Physics
+			Technikerstraße 25, 08/22
+			A-6020 Innsbruck
+Date: 		22/08/2016
+Version: 	3.0
+
+
+-----------------------
+ CONTENTS OF THIS FILE
+-----------------------
+ * Introduction
+ * Requirements
+ * Installation
+ * Configuration
+ * Workflow
+
+
+--------------
+ INTRODUCTION
+--------------
+This project is intented to enhance and automate the data reduction of the BRITE-data.
+Therefore various scripts are used to plot the data and visualize the reduction process.
+The idea of the reduction comes from the cookbook "Analysis of BRITE data — a cookbook"
+from Andrzej Pigulski, which can be downloaded here:
+http://brite.craq-astro.ca/doku.php?id=cookbook
+
+More details about the decorrelation with some statistics can be found in
+"Analysis of BRITE data - a statistical analysis", which is also attached to this project.
+
+This project automates the following steps:
+ * Removing data points by selecting a cutoff at a desired pixel range of the
+   XCEN and YCEN parameter. This is called 'aperture correction'.
+ * Removing data points with a large scattering in magnitude. Therefore, a lower/upper 
+   threshold is choosen and all data points below/above this threshold are removed.
+   This is called 'flat removal'.
+ * Decorrelation of the flux/magnitude with temperature, x- and y-center. Due to chopping 
+   mode this is also enhanced to decorrelate the flux with x1-, x2-, y1- and y2-center
+   separately.
+ * Performing sigma-clipping to remove points with a large scattering within one orbit.
+ 
+Within this steps another kind of redcution process is performed - orbital removal.
+If there are too many data points within one orbit removed, the whole orbit is removed.
+If there are lots of outliers within one orbit, it is very probable that the other data points,
+which were not removed by a procedure, have also a large error. To reduce this error in the
+final data, the whole orbit is therefore removed. 
+The threshold of how many data points can be removed, without removing the whole orbit, can
+be set inside the script (which will be explained in detail later).
+
+This script is compatible with the version 1 to 4 (R1 to R4) of the BRITE-DATA.
+Note: Testing has been done with R2 (normal mode) and R4 (chopping mode) so far.
+
+
+Note: The following abbreviations are used:
+HJD ... heliocentric julian date (=julian date corrected for differences in earths
+position with respect to the sun)
+XCEN/x-cen/x-center ... denotes the central position of the measured point spread function
+on the CCD (same for Y)
+
+
+--------------
+ REQUIREMENTS
+--------------
+ * bash - to execute the main script
+ * python with matplotlib, numpy, scipy.stats libraries for plotting and data reduction
+ * awk - for data calculation
+	IMPORTANT:  awk or gawk is needed, since using mawk results in an error!
+				Please be sure to use awk or gawk as your default awk-interpretor
+ * mktemp - for generating temporary files to ensure that no other files are
+	overwritten
+ * OPTIONAL: you can set the TMPDIR environment variable, so that temporary files
+	for calculations will be stored in TMPDIR - may improve speed, if TMPDIR is in RAM 
+	Uses /tmp by default if TMPDIR is not set
+ * OPTIONAL: Period04 for time-series analysis
+  
+
+--------------
+ INSTALLATION
+--------------
+1) Simply extract the zip-file to your working directory. 
+
+2) Call the script with:
+	./Main_script.sh <FILE>		with FILE is the data file containing BRITE-data 
+	e.g.: ./Main_script.sh BAb_1.data
+	
+	Note: The file format is ASCII-CSV with a header starting with 'c ' e.g.:
+	c SatellID= BAb		/ satellite short ID
+
+	Note: The columns are separated by blank spaces/tabulators
+
+3) The script will guide you through the reduction process.
+	The workflow of the script will be shown below for better understanding.
+
+4) The script automatically creates a logfile and loggs the input/workflow.
+	Note: Currently the decorrelation is not logged.
+
+
+---------------
+ CONFIGURATION
+---------------
+1) Before getting started, you might want to set your default HJD. Because
+	the HJD is a very large numer, a default value is subtracted. 
+	To set the HJD to your default date open the Main_script.sh with a text 
+	editor (gedit, emacs, ...) and change the variable 'HJDsub'.
+
+2) The script splits the orbits according to the timespan between two data
+	points. You can change this by editing the variable 'thres'. This is might
+	not necessary, because the orbits should have a constant minimum separation
+
+3) The threshold of how many data points can be removed without removing the 
+	whole orbit is denoted by 'orbthres' inside the function 'remove_orbit ()'.
+	The default value is 0.2 - means that if less than 20% of the original
+	data points are present, the whole orbit is removed
+
+----------
+ WORKFLOW
+----------
+1) Prepares the input: Converts the measured flux to magnitudes and
+	subtracts the default HJD. Also prepares the file-format for the other 
+	scripts involved in the reduction process.
+
+
+2) Displays a graph with 4 plots for a general overview:
+	* YCEN vs. XCEN
+	* Magnitude vs. HJD
+	* Magnitude vs. XCEN
+	* Magnitude vs. YCEN
+	
+	The user can click onto a data point to get further informations about it.
+	Using 'n' and 'p' to browse through the datapoints (next/previous).
+
+   
+3) Let the user select a methode for aperture correction:
+	* No correction
+	* (Using default values - only in 'normal-mode')
+	* Use the keyboard to input some values
+	* Use the graphical interface
+	* Quit the program
+	
+	Using the graphical interface: A window with 2x3 (chopping mode) or
+	1x3 (normal mode) plots appear. The version of the used data file 
+	tells the script which mode is used - no further user actions are
+	required here.
+	The left plots shows the YCEN vs. XCEN for the first (upper plot) and second
+	(lower plot) CCD position of the chopping mode. The user can draw
+	a rectangle with the mouse. Note: Drawing is disabled, if a button on
+	the toolbar is pressed, e.g. zooming
+	The plots in the middle show the Magnitude vs. XCEN. There the user can
+	also draw, but only select some XCEN values. The same for the right plots
+	with Magnitude vs. YCEN.
+	If the window is closed the script continues. If no rectangular shape
+	is drawn, some default values are taken.
+	
+	
+4) Let the user select a methode for flat removal:
+	* No removal
+	* Use the keyboard to input some values
+	* Use the graphical interface
+	* Quit the program
+
+	Using the graphical interface: A plot with Magnitude vs. HJD appears.
+	The user can draw a shape to select a lower and upper threshold of
+	the magnitude. If the window is closed the script continues. If no shape
+	is drawn, some default values are taken.
+
+	
+5) Decorrelation:
+	At first a window is shown with 2x2 plots:
+	* Magnitude vs. Temperature
+	* Magnitude vs. HJD
+	* Magnitude vs. XCEN
+	* Magnitude vs. YCEN
+	
+	There the correlation of the magnitude with the temperature, XCEN and YCEN
+	is plotted as a line. A red line correspond to blue data points and 
+	a blue line correspond to red data points. Due to chopping mode two
+	different data sets are plotted in the Magnitude vs. XCEN/YCEN.
+	In the console the decorrelation matrix is written. More information about
+	that in the "statistical analysis".
+	The higher the value for a specific variable is, the more probable a
+	correlation between magnitude and this variable exists. Now the user can
+	select a decorrelation variable. Deccorelation is applied, the plot is
+	generated and the matrix is calculated again.
+	
+	If the user quits the decorrelation the script continues to the next step.
+	
+	
+6) Let the user select a methode for sigma clipping:
+	* No sigma clipping
+	* Use sigma clipping
+	* Quit the program
+
+	In the sigma clipping the user has to select a clipping value. Sigma clipping
+	is performed the following way. For every orbit it calculates the mean and
+	standard deviation (stddev) value. Afterwars it just keeps the following
+	data points: mean - (stddev * clipping) < data < mean + (stddev * clipping)
+	Then it calculates the mean and stddev for this orbit again. If the stddev
+	is stable (does not change any more) the clipping is finished.
+
+
+7) A final overview is shown:
+	The user sees the corrected/processed data and might remove manually some
+	points. Therefore one needs to press 'CTRL' + click onto the desired point.
+	WARNING: Removed points can not be restored! Removing a point can not
+				be undone! BE CAREFUL!
+
+
+8) The output is written to disk and temporary files are removed/deleted.
+	Also a logfile is provided. The output is given in CSV-format with a 
+	',' as delimiter. The scipts also outputs the name of the file.
+
+
+*************************************************************************************	
