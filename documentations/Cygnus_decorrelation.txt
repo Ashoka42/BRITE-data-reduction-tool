@@ -1,0 +1,319 @@
+---------------------
+ GENERAL INFORMATION
+---------------------
+Title: 		Decorrelation of 230 setups from the Cygnus-field
+Author:		Kondrak Matthias
+Contact:	matthias.kondrak@uibk.ac.at
+Address:	University of Innsbruck, Institute of Astro and Particle Physics
+			Technikerstraße 25, 08/22
+			A-6020 Innsbruck
+Date: 		22/08/2016
+Version: 	3.0
+
+---------------------
+The idea behind this correlation connection is that the dependency between flux and
+instrumental parameters like temperature, x- and y-center should not vary dramatically 
+over time. There exist some aging effects or damaging due to cosmic radiation, but these
+changes are not huge compared to temperature changes during one setup. So aging effects
+can be neglected on such small scales. This gives a constant dependecy (over time) between
+flux and the other parameters for each satellite.
+
+Taking only one setup and try to decorrelate it can be hard work. More setups gives more
+data for statistical analysis and therefore a better understanding of correlation can be
+achieved. Also more data compensate for fluctuation, which may occur on a specifc setup
+like straylight from the moon (which is not directly measured/present in the dataset).
+
+So analysing 230 different setups from the Cygnus-field is the first step.
+
+There are different approaches possible and discussed in the following:
+
+1) Look for correlations in the original datasets. This is done by calculating the
+correlation coefficient matrix between flux, temperature, x- and y-center for each dataset:
+http://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.corrcoef.html
+Afterwards the R² value is calculated:
+http://mathbits.com/MathBits/TISection/Statistics2/correlation.htm
+For example, if the correlation coefficient R = 0.922, then R² = 0.850, which means that
+85% of the total variation in y can be explained by the linear relationship between x
+and y (as described by the regression equation).
+
+Then only datasets with a correlation coefficient between flux and temperature (T-Corr) > 25%
+are used for further investigation. Also the other correlations flux/y-center (X-Corr) and
+flux/y-center (Y-Corr) have to be smaller than T-Corr. Afterwards a linear fit between flux
+and temperature (linear correlation) is computed.
+Why using this method? The use of this method is described in another file.
+
+Every dataset has a number (shortened filename for easier scripting) and the plots of these
+data are attached.
+
+Note: 	These data are all taken by BTr - Brite Toronto (!)
+	Other satellites may have another correlation
+
+--------------------------------------------------------------------------------------------
+
+2015-07-29     / observation start date 
+2015-09-05      / observation end date 
+37.6        / observation time base [d] 
+
+Number:	102
+File:	HD202850_9_CygnusII-2015_BTr_setup3_APa3s2chop_R3.dat
+T-Corr:	0.2668
+X-Corr: 0.0067
+Y-Corr: 0.0000 (!)
+Fit:	-0.001699 x + 4.166
+
+Number:	114
+File: 	HD202904_9_CygnusII-2015_BTr_setup3_APa3s2chop_R3.dat 
+T-Corr:	0.4417
+X-Corr: 0.0095
+Y-Corr: 0.0071
+Fit:	-0.004365 x + 4.18
+
+Number: 19.dat
+File:	HD198478_9_CygnusII-2015_BTr_setup3_APa3s2chop_R3.dat
+T-Corr: 0.4537
+X-Corr: 0.0146
+Y-Corr: 0.0178
+Fit: 	-0.004408 x + 4.772
+
+Number:	5
+File:	HD198183_9_CygnusII-2015_BTr_setup3_APa3s2chop_R3.dat
+T-Corr:	0.4437
+X-Corr: 0.0001 (!)
+Y-Corr: 0.0129 	
+Fit:	-0.01914 x + 5.506
+
+--------------------------------------------------------------------------------------------
+
+2015-09-05     / observation start date 
+2015-10-11      / observation end date 
+35.9        / observation time base [d]
+
+Number:	115
+File:	HD202904_9_CygnusII-2015_BTr_setup4_APa3s2chop_R3.dat
+T-Corr:	0.3174
+X-Corr: 0.0000 (!)
+Y-Corr: 0.0212
+Fit:	0.006619 x + 3.967
+
+Number:	20
+File:	HD198478_9_CygnusII-2015_BTr_setup4_APa3s2chop_R3.dat
+T-Corr:	0.3131
+X-Corr: 0.0103
+Y-Corr: 0.0024
+Fit:	-0.004564 x + 4.815
+
+Number:	6
+File:	HD198183_9_CygnusII-2015_BTr_setup4_APa3s2chop_R3.dat
+T-Corr: 0.2807
+X-Corr: 0.0024
+Y-Corr: 0.0048
+Fit:	-0.01006 x + 4.889
+
+--------------------------------------------------------------------------------------------
+
+Discussion:
+In these calculations just the T-Corr. is taken into account. Other decorrelations or 
+reduction like elimination of outliers, orbital decorrelation, etc. have NOT been done!
+Processing all the data to get just the decorrelation is too much work (at that time) and the
+gain is questionable.
+
+Results from 115 and 20 may not be trustworth, because they have some 'features' between
+timestamp 697 and 703 (related timescales on the plots - subtracted a HJD of 2456600.0).
+This feature shows some irregularity although it might fit in the pulsation pattern, but with
+a amplitude, which may be caused by other correlations/instrumental effects.
+
+Using these results the slope (which is the interesting parameter) varies from (!) 0.006619
+to -0.01006. The positive slope should be excluded, because with increasing temperature the
+magnitude would increases and therefore the measured brightness of the star decreases, which
+is not physical.
+Physically with increasing temperature the probability of forming electron-hole-pairs within 
+the CCD and therefore the current increases. This would lead to an increase in the measured
+flux and a decrease of the magnitude. So postive slope should be excluded.
+
+If using a weighted mean - so summing up the slopes multiplied with the T-Corr. value for
+all 7 datasets the result is: -0.00626604			not weighted: -0.00563057
+If using just the negative ones, the result is: -0.00812525	not weighted: -0.00767217
+
+
+
+2) Instead of using just data with an obvious correlation (T-Corr > 25%), all data could
+be used. Doing the same procedure like above the result is: 
+
+Seperated by satellite:
+BLb:	-0.0580672	(25 datasets, not weighted: -0.0254577)
+BAb:	-0.00389039 	(72 datasets, not weighted: -0.0017106)
+UBr:	0.0199749 	(36 datasets, not weighted: 0.009354)
+BTr:	0.00116507 	(96 datasets, not weigthed: -0.000392875)
+-----------------------------------------------------------------------
+All	-0.0043618	(230 datasets, not weighted: -0.00200251)
+
+All, but without the 8 most important (weighted) ones (222 datasets) -0.00284168 (weighted)
+
+Discussion:
+Using so much raw data can spoil the result, because if there are much outliers and just a
+few datapoints the result may not be accurate or has at least large error bars.
+Also the slope varies between 0.02 and -0.6 (or 0.01 and -0.03 if not weighted) between
+different satellites.
+
+
+
+3) Weighting the number of datapoints
+Instead of using just the weight of the correlation matrix, the number of datapoints are
+also important, because a strong correlation with a few datapoints can be just a random
+distribution, which matches a correlation pattern. So implementing also a weight by the
+number of datapoints (linear weight) is the next step. 
+
+A weight with the number of lines multiplied with the correlation coefficient squared
+gives a result of: -0.00245443 for the slope of the linear fit:
+
+Seperated by satellite:
+BLb: 	-0.0649042	25 datasets
+BAb: 	-0.00348485	72 datasets
+UBr: 	0.0135331 	36 datasets
+BTr:	-0.0025394	96 datasets
+-----------------------------------------------------------------------
+
+Which is a quite 'more likely' outcome than just a weighting by the correlation coefficient.
+The slopes of the correlations of the other satellites are almost the same as before.
+But the result for BTr leads to a negative slope, which is expected. So this is would be
+an 'improvement'. Also the slope of UBr decreased a little.
+
+
+3a) Summary of T-correlation:
+
+Seperated by satellite:
+Sat	not weighted	just corr weight	corr * lines weight	datasets
+------------------------------------------------------------------------------------
+BLb:	-0.0254577	-0.0580672		-0.0649042		25
+BAb:	-0.0017106 	-0.00389039		-0.00348485		72
+UBr:	0.009354	0.0199749 		0.0135331 		36 
+BTr:	-0.000392875	0.00116507 		-0.0025394		96 
+------------------------------------------------------------------------------------
+All:	-0.00200251	-0.0043618		-0.00245443		230
+
+The correlation for the temperature should be negative (as explained above), but 
+there exist a positive correlation for UBr, which is quite surprising. Also different
+weights have not an impact on the sing of the slope. This behavior of UBr should be 
+investigated further!
+
+
+3b) Decorrelating of the y-center:
+The same as above, but just for the y-center
+
+Seperated by satellite:
+Sat	not weighted	corr weight	line weight	corr * lines weight	datasets
+------------------------------------------------------------------------------------
+BLb:	0.013588	0.0180144	0.0119384	0.0130947		25
+BAb:	0.00136806	0.00661605	0.00131852	0.0106168 		72
+UBr:	0.01135		0.0425944	0.0069507	0.0343082		36 
+BTr:	0.00358125	0.0440252	0.00385839	0.0390019		96 
+------------------------------------------------------------------------------------
+All:	0.00517652	0.0373219	0.00451898 	0.0378124 		230
+
+
+Looking at these data it can be seen that the correlation is positive for the y-center.
+Also the correlation ranges from 0.00132 (line weighted, BAb) to 0.0440 (just correlation
+coefficient weighted, BTr). Also the slope of the linear correlation is almost the same
+for the correlation weight including  or excluding number of lines and therefore and is
+therefore independent of the number of lines. Just weighting by the number of lines seems
+not correct due to the fact that a huge file, which has no obvious correlation (correlation
+coefficient is almost 0) can 'spoil' the result. So the correlation coefficient should always
+be included for weighting.
+
+
+3c) Decorrelation of the x-center:
+Since the new data are delivered in chopping mode, a simple decorrelation can not be done.
+The data has to be splitted into two datasets. Therefore the mean of the x-center is
+calculated. Everything below or above this mean value is considered as independent dataset.
+Then the decorrelation has to be done for 2 x-center values.
+
+IMPORTANT:
+At this point it is clear that the dataset should be 'splitted' into two independent sets
+regarding the decorrelation of the x-center. Using the chopping mode and calculating the
+correlation coefficient matrix leads to a 'degeneration'. This means:
+
+I) The result from the decorrelation matrix regarding the x-center value is almost 0, because
+the script calculates a correlation between a almost smooth light curve and a jumping x-center.
+
+II) If a larg correlation is found (larger than for temperature or y-center), a simple linear
+correlation can not be assumed, because of the jumping between these datapoints. So the data
+has to split up in order to calculate one correlation for one dataset.
+
+III) Also the behavior around one x-center coordinate may be physically different compared to
+the other x-center coordinate. Therefore it is obvious to use two different decorrelation 
+methods for chopping mode.
+
+IV) This should not have a great influence on the results above, because the x-center was not
+considered jet. So this kind of 'degeneration' was not a problem above.
+
+V) Splitting up this dataset and using different decorrelations for the x-center only applies
+for THIS variable. The temperature and y-center correlation ALWAYS apply over the WHOLE dataset.
+No splitting is neccessary for these variables, because it is assumed (yet) that there is no
+correlation between temperature/x-center and y-center/x-center. If this would be the case, a
+splitting also for temperature and y-center would be neccessary, because of the dependency on
+the physical environment around two different center-pixels.
+
+
+Seperated by satellite for 'normal' correlation (no splitting):
+Sat	not weighted	corr weight	line weight	corr * lines weight	datasets
+------------------------------------------------------------------------------------
+BLb:	-0.001084	-0.00246686	-0.000952508	-0.00237048 		25
+BAb:	-0.000923611	-0.000852271	-0.000482203	-0.000925113 		72
+UBr:	8.88889e-05	-0.000811164	-0.000117797	-0.000530563 		36
+BTr:	9.6875e-05	-0.000467332	-7.28397e-05	-0.0008211 		96
+------------------------------------------------------------------------------------
+All:	-0.000352609	-0.000574942	-0.000114438	-0.000818429 		230
+
+Now the same, but for splitted datasets.
+
+Seperated by satellite for x-center 1:
+Sat	not weighted	corr weight	line weight	corr * lines weight	datasets
+------------------------------------------------------------------------------------
+BLb:	-0.0096		-0.026251	-0.0112596	-0.0352891 		25
+BAb:	0.0156042	0.0316466	0.00778965	0.0247321 		72
+UBr:	-0.007325	-0.028985	-0.00750329	-0.0201602 		36
+BTr:	0.00231458	0.00061432	0.00215455	0.000765552 		96
+------------------------------------------------------------------------------------
+All:	0.00366087	0.00422113	0.000211044	-0.00620809 		230
+
+
+Seperated by satellite for x-center 2:
+Sat	not weighted	corr weight	line weight	corr * lines weight	datasets
+------------------------------------------------------------------------------------
+BLb:	0.011636	0.0372711	0.0119959	0.0399588 		25
+BAb:	-0.00264861	-0.0080368	-0.00189496	-0.00840399 		72
+UBr:	0.00291389 	0.00886367	0.00309268	0.0083543 		36
+BTr:	-0.00345104	-0.0162622	-0.00343314	-0.0145419 		96
+------------------------------------------------------------------------------------
+All:	-0.000548696	-0.00106371	-0.0017866	-0.00931695 		230
+
+The result is very intersting, because the sign of the slope changes comparing the splitted
+datasets. So if there is a positive correlation between the flux and the x-center in above
+the mean x-center value, there is a negative correlation between the flux and the x-center,
+when the x-center value is below the mean. So this implies that the datasets have to be
+splitted up and decorrelated seperatly.
+
+
+4) Conclusions:
+This data can improve the decorrelation procedure. First it has been discovered that the
+satellite UBr has a positive temperature correlation (which was not expected!). Although 36
+datasets are not much and these data are not preprocessed (outliers removed, aperature selected,
+etc.), it indicates some 'strange' behavior. BLb has 'just' 25 datasets, but also a negative
+correlation, which is expected. So further investigation of the temperature correlation of 
+UBr is important/neccessary!
+
+Secondly the values (slope) of a linear correlation can be limited/enclosed by the values
+listed above. So in the decorrelation process the slope of one typicall dataset can be compared
+with the values above. Especially for small datasets this is very important, because some
+correlations might be detected as temperature correlation, but relate to stellar pulsations.
+This can be detected if the slope of a linear correlation lies outside some borders definded
+accordingly to such statistics above.
+
+Another very important result is the behavior of the copping procedure! A 'normal' decorrelation
+should not be applied, but the data should be splitt up into 2 independent datasets, because
+the sign of the slope of the linear fit changes if data above/below the mean is considered.
+This behavior is shown in ALL (!) investigations (weighted/unweighted data for each satellite
+independent). Although the overall correlation may be small and compensated by the chopping,
+there exist a non-vanishing correlation for each physicall pixel-center.
+
+
