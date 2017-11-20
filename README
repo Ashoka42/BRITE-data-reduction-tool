@@ -77,9 +77,7 @@ on the CCD (same for Y)
 	for calculations will be stored in TMPDIR - may improve speed, if TMPDIR is in RAM 
 	Uses /tmp by default if TMPDIR is not set
  * OPTIONAL: Period04 for time-series analysis
- * OPTIONAL: If you want to run this application on a Mac system, you need gnu-sed. The easiest way to do this 
- 	(provided you have brew installed) is to call *brew install gnu-sed --with-default-names*. This will
-	replace your default sed with gnu-sed.
+ * OPTIONAL: If you want to run this application on a Mac system, you need gnu-sed. The easiest way to do this (provided you have brew installed) is to call *brew install gnu-sed --with-default-names*. This will replace your default sed with gnu-sed.
   
 
 --------------
