@@ -1,4 +1,4 @@
-#!/bin/bash   
+#!/bin/bash
 # =======================================================================================
 # Copyright (C) 2016 Kondrak Matthias
 #
@@ -22,8 +22,8 @@
 #				Technikerstrasse 25, 08/22
 #				A-6020 Innsbruck
 # Date:			22/08/2016
-# Version:		3.0 
-# 
+# Version:		3.0
+#
 # Description:	This script guides the user through a data reduction process
 #				of BRITE-satellite data. This script contains:
 #				* aparature correction
@@ -40,11 +40,11 @@
 #				$one = (string) Input file
 #				-----------------------------------------------------------------
 #
-# Output:   	INPUT_dd.mm.yyyy_hh:mm:ss.data 
-#				INPUT_dd.mm.yyyy_hh:mm:ss.log 
-#			
+# Output:   	INPUT_dd.mm.yyyy_hh:mm:ss.data
+#				INPUT_dd.mm.yyyy_hh:mm:ss.log
 #
-# Exit:   		0 - Success 
+#
+# Exit:   		0 - Success
 #				1 - No input-parameter
 #				2 - File does not exist
 #				3 - User quit
@@ -73,7 +73,7 @@ orb_thres=0.2
 export LC_ALL=en_US.UTF-8
 # Sets the path for the temporary files to $TMPDIR or default /tmp
 # If $TMPDIR is set to RAM - may improve speed, also reduces writing (important for SSD)
-if [ $(env | grep -q TMPDIR) ]; then  
+if [ $(env | grep -q TMPDIR) ]; then
 	TD=${TMPDIR}/
 else
 	TD=/tmp/
@@ -129,7 +129,7 @@ remove_orbit () {
 # ---------------------------------------------------------------------------------------
 # Checks if AWK and Python are installed, otherwise exits;
 type awk >/dev/null 2>&1 || { echo >&2 "ERROR: Awk is required but not installed. Exit."; exit 1; }
-type python >/dev/null 2>&1 || { echo >&2 "ERROR: Python is required but not installed. Exit."; exit 1; }
+type python3 >/dev/null 2>&1 || { echo >&2 "ERROR: Python3 is required but not installed. Exit."; exit 1; }
 type mktemp >/dev/null 2>&1 || { echo >&2 "ERROR: mktemp is required but not installed. Exit."; exit 1; }
 
 # Checks if system uses 'real awk' per default
@@ -150,17 +150,17 @@ then
 	type gawk >/dev/null 2>&1 || { echo >&2 "ERROR: Gawk is also not installed. Exit."; exit 1; }
 
 	# Prints location of gawk and uses gawk as default awk
-	echo "Using gawk located in: " 
+	echo "Using gawk located in: "
 	which gawk
 	echo ""
-	rawk=gawk	
+	rawk=gawk
 fi
 
 
 # Checks the input parameter - exits the script if no file was selected
 if [ $# -lt 1 ] ; then
 	printf "Usage $0 \<file.dat\>\n"
-	exit 1;          		
+	exit 1;
 fi
 
 # Checks if the input file exists - otherwise exit
@@ -202,7 +202,7 @@ $rawk -v HJD=$HJDsub '{printf("%10.6lf,%9.7lf,%5.2lf,%5.2lf,%5.2lf\n"), $1-HJD, 
 # Input value is a threshold, which specifies the time between two orbits
 # In the beginning sets the orbital value to 1 (n = 1)
 # For the first line (NR == 1) it sets the current value to the variable. Then it
-# goes on (next). If the next (current) value minus the old one is larger than the 
+# goes on (next). If the next (current) value minus the old one is larger than the
 # threshold, it adds 1 to the orbital number. Then it prints the whole line and
 # adds a ',' (separator) and the current orbital number. Afterwards it sets the current
 # value to the variable.
@@ -212,9 +212,9 @@ $rawk -F',' -v t=$thres 'BEGIN{n = 1} NR == 1 {old = $1; print $0","1; next} {if
 # column1 = HJD  / Heliocentric Julian Date at start of exposure (subtracted an
 #			arbitrary date) [day]
 # column2 = FLUX / measured flux [mag]
-# column3 = XCEN / Profile centre of gravity with respect to raster origin [pixel] 
-# column4 = YCEN / Profile centre of gravity with respect to raster origin [pixel] 
-# column5 = CCDT / CCD Temperature [C] 
+# column3 = XCEN / Profile centre of gravity with respect to raster origin [pixel]
+# column4 = YCEN / Profile centre of gravity with respect to raster origin [pixel]
+# column5 = CCDT / CCD Temperature [C]
 # column6 = Orbit / Number of orbit - needed for special treatments of different orbits
 #	Sigma clipping per orbit, removing whole orbit if to many datapoints are outliers
 
@@ -233,7 +233,7 @@ printf "! Data reduction for BRITE-data
 !	- Use graphical assistance/selection
 !	- Use keyboard to enter values
 !	- Supports chopping mode
-! 
+!
 !
 !  * Flat removal: Remove data points above/below a certain flux/magnitude threshold
 !	in order to remove large flux/magnitude scattering:
@@ -296,7 +296,7 @@ $rawk -F',' 'BEGIN{print "HJD,Magnitude[mag],XCEN[pixels],YCEN[pixels]"}{print $
 
 # Plots the overview - gets an array via stdout back for removign specific datapoints
 # This 'expert-mode' is used in a later step, so output is not required
-grommorg=$(python overview_plot.py $TMP)
+grommorg=$(python3 overview_plot.py $TMP)
 
 # ---------------------------------------------------------------------------------------
 #								Aparature correction
@@ -334,7 +334,7 @@ then
 
 				# Gets the rectangular shape for the automatic aberration correction,
 				# which is preselected in the file (flag-column). At first just uses
-				# flagged values, then sorts the data, then extracts the first and 
+				# flagged values, then sorts the data, then extracts the first and
 				# last entry. Then pastes the two values into an array
 				xmin=$(awk -F "," '{if ($6 == 1) print $3}' $DATA | sort -n | head -n1)
 				xmax=$(awk -F "," '{if ($6 == 1) print $3}' $DATA | sort -n | tail -n1)
@@ -349,7 +349,7 @@ then
 				break ;;
 
 			# Input by keyboard
-			"Manually enter data with keyboard.")	
+			"Manually enter data with keyboard.")
 				# Informs user and writes logfile
 				echo "Please enter your aperture values for x: x_min x_max y_min y_max"
 				echo "e.g.: 0 100 0 100"
@@ -357,18 +357,18 @@ then
 				# Reads the input
 				read user_input
 				# Sets the user input to an array
-				temparr=(${user_input})		
+				temparr=(${user_input})
 				break ;;
 
 			# For graphical assistance
 			"Using graphical assistance.")
 				# Informs user and writes logfile
-				echo "Please use your mouse to draw a rectangular around the data, which you want to use. When you are finish, close the window to continue." 
+				echo "Please use your mouse to draw a rectangular around the data, which you want to use. When you are finish, close the window to continue."
 				echo "! Using graphical data" >> $LOG
 
 				# Gets the rectangular shape for the automatic aberration correction,
 				# which is preselected in the file (flag-column). At first just uses
-				# flagged values, then sorts the data, then extracts the first and 
+				# flagged values, then sorts the data, then extracts the first and
 				# last entry. Then pastes the two values into an array
 				xmin=$(awk -F "," '{if ($6 == 1) print $3}' $DATA | sort -n | head -n1)
 				xmax=$(awk -F "," '{if ($6 == 1) print $3}' $DATA | sort -n | tail -n1)
@@ -378,7 +378,7 @@ then
 
 				# Calls the aperture_correction script, if the script is closed
 				# the values of the rectangle are returned to an array
-				temparr=($(python aperture_correction1.py $TMP $xmin $xmax $ymin $ymax))
+				temparr=($(python3 aperture_correction1.py $TMP $xmin $xmax $ymin $ymax))
 				break ;;
 
 			# Quit
@@ -406,7 +406,7 @@ else
 				temparr[4]=0
 				temparr[5]=100
 				temparr[6]=0
-				temparr[7]=100		
+				temparr[7]=100
 				break ;;
 
 			# Input by keyboard
@@ -416,16 +416,16 @@ else
 				echo "e.g.: 0 100 0 100 0 100 0 100"
 				echo "! Using keyboard data" >> $LOG
 				read user_input
-				temparr=(${user_input})		
+				temparr=(${user_input})
 				break ;;
 
 			# For graphical assistance
 			"Using graphical assistance.")
 				# Informs user and writes logfile
-				echo "Please use your mouse to draw a rectangular around the data, which you want to use. When you are finish, close the window to continue." 
+				echo "Please use your mouse to draw a rectangular around the data, which you want to use. When you are finish, close the window to continue."
 				echo "! Using graphical data" >> $LOG
 				# Does the aperture_correction
-				temparr=($(python aperture_correction2.py $TMP))	
+				temparr=($(python3 aperture_correction2.py $TMP))
 				break ;;
 
 			# Quit
@@ -445,7 +445,7 @@ echo "Applying aperture corrections with:" ${temparr[@]}
 if [ ${version} == "R1" ] || [ ${version} == "R2" ] ;
 then
 	echo "* x_min x_max y_min y_max" >> $LOG
-	# Applies the aperture correction - excludes data points, which are not within the 
+	# Applies the aperture correction - excludes data points, which are not within the
 	# rectangular shape(s) selected above - needs echo, because of the 'default'
 	# option in R1/R2
 	$rawk -F "," -v x0=$(echo ${temparr[0]}) -v x1=$(echo ${temparr[1]}) -v y0=$(echo ${temparr[2]}) -v y1=$(echo ${temparr[3]}) '{if ($3 > x0 && $3 < x1 && $4 > y0 && $4 < y1) print $0}' OFS=',' $DATA > $TEM
@@ -474,7 +474,7 @@ fi
 #									FLAT REMOVAL
 # ---------------------------------------------------------------------------------------
 # Informs user and writes logfile
-echo "Would you like to do a flat removal?" 
+echo "Would you like to do a flat removal?"
 printf "\n\n! Data reduction - Flat removal\n" >> $LOG
 
 # Give some choices
@@ -497,7 +497,7 @@ do
 			read user_input
 			flat=(${user_input})
 			break ;;
-		
+
 		"Using graphical assistance.")
 			# Informs user and writes logfile
 			echo "Please use your mouse select data, close plot to continue"
@@ -505,7 +505,7 @@ do
 			# Prepares the data - header and just uses needed columns
 			$rawk -F',' 'BEGIN{print "HJD,Magnitude[mag]"}{print $1","$2}' $TEM > $TMP
 			# Starts flat_removal script; Returns lower and upper limit
-			flat=($(python flat_removal.py $TMP))
+			flat=($(python3 flat_removal.py $TMP))
 			break ;;
 
 		"Quit.")
@@ -544,15 +544,15 @@ fi
 # ---------------------------------------------------------------------------------------
 # Informs user
 echo ""
-echo "Starting decorrelation ..." 
+echo "Starting decorrelation ..."
 # Starts the decorrelation script depending on the version of the file
 if [ ${version} == "R1" ] || [ ${version} == "R2" ] ;
 then
 	# The output of the decorrelation is redirected to the stderr, so here the stderr
 	# from the decorrelation is redirected to the temporary/working file
-	python decor1.py $TMP 2> $TEM
+	python3 decor1.py $TMP 2> $TEM
 else
-	python decor2.py $TMP 2> $TEM
+	python3 decor2.py $TMP 2> $TEM
 fi
 
 # To get the required syntax the ',' is replaced by a new line, the '[' and ']' denoting
@@ -596,7 +596,7 @@ do
 			echo $sig >> $LOG
 			cp $TMP WORKING.dat
 			# Applies sigma clipping - NAN entries
-			python sigma.py $TMP $sig > $TEM
+			python3 sigma.py $TMP $sig > $TEM
 			# Removes all "NAN" entries
 			sed -i -e "s/'//g; s/,/\n/g; s/\[//g; s/\]//g; s/ //g" $TEM
 			paste -d',' $TMP $TEM > $TEM.tmp
@@ -638,7 +638,7 @@ $rawk -F',' 'BEGIN{print "HJD,Magnitude[mag],XCEN[pixels],YCEN[pixels]"}{print $
 
 # Plots the overview - gets an array via stdout back for removign specific datapoints
 # The user can now remove/delete single points using 'CTRL' + click
-python overview_plot.py $TEM > $TEM.tmp
+python3 overview_plot.py $TEM > $TEM.tmp
 # Since overview_plot.py returns an array of the HJD incl. removed points denoted by
 # 'nan' (not a number), the array has to be trimed (removing of '[' and ']' and
 # replacing ',' by a new line
