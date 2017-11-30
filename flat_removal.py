@@ -56,89 +56,93 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
+
 # =======================================================================================
 # Defines the class for drawing rectangulars and selecting the aperature correction
 class draw_rect(object):
     # Initialises all variables
     def __init__(self, axis1):
-	# Defines the axis used
-	self.ax1 = axis1
-	# Defines the default y-coordinate of the rectangle
-	self.y0 = -50
-	self.y1 = 50
-	# Defines variables for drawing enabled/disabled and default output
-	self.draw = 0
-	self.output = "-50 50"
-	# Defines a rectangle for the plot (mag/hjd)
-	# Sets the rectangular width to 10000 - should be enough
-	self.rect1 = Rectangle((0,0), 10000, 0, alpha=0.3)	
-	# Adds the rectangle to the corresponding axis
+        # Defines the axis used
+        self.ax1 = axis1
+        # Defines the default y-coordinate of the rectangle
+        self.y0 = -50
+        self.y1 = 50
+        # Defines variables for drawing enabled/disabled and default output
+        self.draw = 0
+        self.output = "-50 50"
+        # Defines a rectangle for the plot (mag/hjd)
+        # Sets the rectangular width to 10000 - should be enough
+        self.rect1 = Rectangle((0, 0), 10000, 0, alpha=0.3)
+        # Adds the rectangle to the corresponding axis
         self.ax1.add_patch(self.rect1)
 
     # Defines what should happen on pressing the mousebutton
     def on_press(self, event):
-	# At first gets the toolbar-button-pressed-info and checks if
-	# no toolbar-button is pressed (zooming or shifting/moving)
-	# So zooming/shifting can be done without drawing a new rectangle
-	toolbar = plt.get_current_fig_manager().toolbar
-    	if toolbar.mode == '':
-		# If the mouse is INSIDE the plot
-		if event.inaxes is self.ax1:
-			# Enables drawing
-			self.draw = 1
-			# Gets the y-coordinate, where the mouse it located
-			self.y0 = event.ydata
+        # At first gets the toolbar-button-pressed-info and checks if
+        # no toolbar-button is pressed (zooming or shifting/moving)
+        # So zooming/shifting can be done without drawing a new rectangle
+        toolbar = plt.get_current_fig_manager().toolbar
+        if toolbar.mode == '':
+            # If the mouse is INSIDE the plot
+            if event.inaxes is self.ax1:
+                # Enables drawing
+                self.draw = 1
+                # Gets the y-coordinate, where the mouse it located
+                self.y0 = event.ydata
 
     # On mouse button release
     def on_release(self, event):
-	# Only if it is INSIDE the first plot
-	if event.inaxes is self.ax1:
-		# Sorts the x- and y-values and sets the output
-		if self.y0 < self.y1:
-			self.output = str(self.y0) + " " + str(self.y1)
-		else:
-			self.output = str(self.y1) + " " + str(self.y0)
-		
-		# Redraws the rectangle (if last drawing went wrong)
-		self.rect1.set_height(self.y1 - self.y0)
-		self.rect1.set_xy((0, self.y0))
-		self.ax1.figure.canvas.draw()
+        # Only if it is INSIDE the first plot
+        if event.inaxes is self.ax1:
+            # Sorts the x- and y-values and sets the output
+            if self.y0 < self.y1:
+                self.output = str(self.y0) + " " + str(self.y1)
+            else:
+                self.output = str(self.y1) + " " + str(self.y0)
 
-	# Sets drawing to 0 - disable drawing
-	self.draw = 0
-	
+            # Redraws the rectangle (if last drawing went wrong)
+            self.rect1.set_height(self.y1 - self.y0)
+            self.rect1.set_xy((0, self.y0))
+            self.ax1.figure.canvas.draw()
+
+        # Sets drawing to 0 - disable drawing
+        self.draw = 0
+
     # On mouse motion
     def on_motion(self, event):
-	# If drawing is enabled
-	if(self.draw == 1):
-		# Checks if inside first plot
-		if event.inaxes is self.ax1:
-			# Gets the new (because moving) coordinates, calculates
-			# the rectangle and draws it during moving, - this can take 
-			# a few seconds due to calulating/redrawing - depending on
-			# size of data
-			self.y1 = event.ydata
-			self.rect1.set_height(self.y1 - self.y0)
-			self.rect1.set_xy((0, self.y0))
-			self.ax1.figure.canvas.draw()
-		else:
-			# If not inside the plot or leaving it - disables drawing
-			self.draw = 0
+        # If drawing is enabled
+        if (self.draw == 1):
+            # Checks if inside first plot
+            if event.inaxes is self.ax1:
+                # Gets the new (because moving) coordinates, calculates
+                # the rectangle and draws it during moving, - this can take
+                # a few seconds due to calulating/redrawing - depending on
+                # size of data
+                self.y1 = event.ydata
+                self.rect1.set_height(self.y1 - self.y0)
+                self.rect1.set_xy((0, self.y0))
+                self.ax1.figure.canvas.draw()
+            else:
+                # If not inside the plot or leaving it - disables drawing
+                self.draw = 0
 
     # Returns the output
     def ret(self):
-	return self.output
+        return self.output
+
 
 # =======================================================================================
 # Checks if there are enough input parameters; else exits
 if (len(sys.argv) < 1):
-	print "Usage", str(sys.argv[0]), "<FILE>"
-	sys.exit(1)
+    print
+    "Usage", str(sys.argv[0]), "<FILE>"
+    sys.exit(1)
 
 # Checks if file exists
 if not (os.path.isfile(sys.argv[1])):
-	print "File does not exist!"
-	sys.exit(2)
+    print
+    "File does not exist!"
+    sys.exit(2)
 
 # Defines variables
 hjd = list()
@@ -155,20 +159,20 @@ header = header.split(',')
 
 # Reads line by line of the file
 for line in f:
-	# Gets the line up to the line-seperator
-	line = line.strip()
-	# Gets the column from the current line, seperated by ','
-	column = line.split(',')
-	# Adds the value to the list
-	hjd.append(column[0])
-	mag.append(column[1])
+    # Gets the line up to the line-seperator
+    line = line.strip()
+    # Gets the column from the current line, seperated by ','
+    column = line.split(',')
+    # Adds the value to the list
+    hjd.append(column[0])
+    mag.append(column[1])
 
 # Close file
 f.close()
 
 # ---------------------------------------------------------------------------------------
 # Generates a figure for plotting with corresponding axis
-fig, ax1 = plt.subplots(1, 1, figsize=(16,9))
+fig, ax1 = plt.subplots(1, 1, figsize=(16, 9))
 fig.canvas.set_window_title('Flat removal')
 
 # Plots the data and labes the axis

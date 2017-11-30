@@ -64,225 +64,231 @@ import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # =======================================================================================
 # Defines a class for clicking
 class PointBrowser(object):
-
     # Initialize the object
-	def __init__(self, a, b, c, d):
-		# Sets the variables for removal, lastindex and CTRL-key pressed
-		self.remi = -1
-		self.lastind = 0
-		self.ctrl_on = False
+    def __init__(self, a, b, c, d):
+        # Sets the variables for removal, lastindex and CTRL-key pressed
+        self.remi = -1
+        self.lastind = 0
+        self.ctrl_on = False
 
-		# Gets the x- and y-limit for the plots -> to not change them when redrawing
-		self.ax1xlim = ax1.get_xlim()
-		self.ax1ylim = ax1.get_ylim()
-		self.ax2xlim = ax2.get_xlim()
-		self.ax2ylim = ax2.get_ylim()
-		self.ax3xlim = ax3.get_xlim()
-		self.ax3ylim = ax3.get_ylim()
-		self.ax4xlim = ax4.get_xlim()
-		self.ax4ylim = ax4.get_ylim()
+        # Gets the x- and y-limit for the plots -> to not change them when redrawing
+        self.ax1xlim = ax1.get_xlim()
+        self.ax1ylim = ax1.get_ylim()
+        self.ax2xlim = ax2.get_xlim()
+        self.ax2ylim = ax2.get_ylim()
+        self.ax3xlim = ax3.get_xlim()
+        self.ax3ylim = ax3.get_ylim()
+        self.ax4xlim = ax4.get_xlim()
+        self.ax4ylim = ax4.get_ylim()
 
-		self.ax1xlabel = ax1.get_xlabel()
-		self.ax1ylabel = ax1.get_ylabel()
-		self.ax2xlabel = ax2.get_xlabel()
-		self.ax2ylabel = ax2.get_ylabel()
-		self.ax3xlabel = ax3.get_xlabel()
-		self.ax3ylabel = ax3.get_ylabel()
-		self.ax4xlabel = ax4.get_xlabel()
-		self.ax4ylabel = ax4.get_ylabel()
-	
+        self.ax1xlabel = ax1.get_xlabel()
+        self.ax1ylabel = ax1.get_ylabel()
+        self.ax2xlabel = ax2.get_xlabel()
+        self.ax2ylabel = ax2.get_ylabel()
+        self.ax3xlabel = ax3.get_xlabel()
+        self.ax3ylabel = ax3.get_ylabel()
+        self.ax4xlabel = ax4.get_xlabel()
+        self.ax4ylabel = ax4.get_ylabel()
 
-		# Also needs the specific data arrays/lists for removing single data points
-		self.a = a
-		self.b = b
-		self.c = c
-		self.d = d
+        # Also needs the specific data arrays/lists for removing single data points
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
 
-		# Initializes the axis
-		self.init_axis()
+        # Initializes the axis
+        self.init_axis()
 
-	# Init of axis
-	def init_axis(self):
+    # Init of axis
+    def init_axis(self):
 
-		# Sets the axis-limits
-		ax1.set_xlim(self.ax1xlim)
-		ax1.set_ylim(self.ax1ylim)
-		ax2.set_xlim(self.ax2xlim)
-		ax2.set_ylim(self.ax2ylim)
-		ax3.set_xlim(self.ax3xlim)
-		ax3.set_ylim(self.ax3ylim)
-		ax4.set_xlim(self.ax4xlim)
-		ax4.set_ylim(self.ax4ylim)
+        # Sets the axis-limits
+        ax1.set_xlim(self.ax1xlim)
+        ax1.set_ylim(self.ax1ylim)
+        ax2.set_xlim(self.ax2xlim)
+        ax2.set_ylim(self.ax2ylim)
+        ax3.set_xlim(self.ax3xlim)
+        ax3.set_ylim(self.ax3ylim)
+        ax4.set_xlim(self.ax4xlim)
+        ax4.set_ylim(self.ax4ylim)
 
-		# Sets the labels
-		ax1.set_xlabel(self.ax1xlabel)
-		ax1.set_ylabel(self.ax1ylabel)
-		ax2.set_xlabel(self.ax2xlabel)
-		ax2.set_ylabel(self.ax2ylabel)
-		ax3.set_xlabel(self.ax3xlabel)
-		ax3.set_ylabel(self.ax3ylabel)
-		ax4.set_xlabel(self.ax4xlabel)
-		ax4.set_ylabel(self.ax4ylabel)
+        # Sets the labels
+        ax1.set_xlabel(self.ax1xlabel)
+        ax1.set_ylabel(self.ax1ylabel)
+        ax2.set_xlabel(self.ax2xlabel)
+        ax2.set_ylabel(self.ax2ylabel)
+        ax3.set_xlabel(self.ax3xlabel)
+        ax3.set_ylabel(self.ax3ylabel)
+        ax4.set_xlabel(self.ax4xlabel)
+        ax4.set_ylabel(self.ax4ylabel)
 
-		# For every sublot - generates a text object and sets the postion of it
-		self.text1 = ax1.text(0.05, 0.95, 'selected: none', transform=ax1.transAxes, va='top')
-		self.text2 = ax2.text(0.05, 0.95, 'selected: none', transform=ax2.transAxes, va='top')
-		self.text3 = ax3.text(0.05, 0.95, 'selected: none', transform=ax3.transAxes, va='top')
-		self.text4 = ax4.text(0.05, 0.95, 'selected: none', transform=ax4.transAxes, va='top')
-	
-		# Generates a selection object (blue circle around datapoint) and sets its 
-		# visibility to False
-		self.selected1, = ax1.plot([c[0]], [d[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
-		self.selected2, = ax2.plot([a[0]], [b[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
-		self.selected3, = ax3.plot([c[0]], [b[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
-		self.selected4, = ax4.plot([d[0]], [b[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
+        # For every sublot - generates a text object and sets the postion of it
+        self.text1 = ax1.text(0.05, 0.95, 'selected: none', transform=ax1.transAxes, va='top')
+        self.text2 = ax2.text(0.05, 0.95, 'selected: none', transform=ax2.transAxes, va='top')
+        self.text3 = ax3.text(0.05, 0.95, 'selected: none', transform=ax3.transAxes, va='top')
+        self.text4 = ax4.text(0.05, 0.95, 'selected: none', transform=ax4.transAxes, va='top')
 
-    # If the user presses a key on the keyboard
-	def on_press(self, event):
-		# If there was not an object selected last - leaves this function
-		if self.lastind is None:
-			return
-		# If the key what was pressed was not 'n', 'p' or CTRL - do nothing
-		if event.key not in ('n', 'p', 'control'):
-			return
-		# If the key pressed was 'n' - increment/next datapoint
-		if event.key == 'n':
-			inc = 1
-		# If it was 'p' - decrement/previous datapoint
-		if event.key == 'p':
-			inc = -1
+        # Generates a selection object (blue circle around datapoint) and sets its
+        # visibility to False
+        self.selected1, = ax1.plot([c[0]], [d[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
+        self.selected2, = ax2.plot([a[0]], [b[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
+        self.selected3, = ax3.plot([c[0]], [b[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
+        self.selected4, = ax4.plot([d[0]], [b[0]], 'o', ms=12, alpha=0.4, color='blue', visible=False)
 
-		if event.key == 'control':
-			self.ctrl_on = True
-		else:
+        # If the user presses a key on the keyboard
 
-			# The new index is the old one plus or minus 1
-			self.lastind += inc
-			# Clips the values, so that the index is always in the range of the array.
-			# E.g. no negative values or values greater than the maximum number of elements
-			# in the array are allowed!
-			# Updates the variable and calls the update function 
-			self.lastind = np.clip(self.lastind, 0, len(self.c) - 1)
-			self.update()
+    def on_press(self, event):
+        # If there was not an object selected last - leaves this function
+        if self.lastind is None:
+            return
+        # If the key what was pressed was not 'n', 'p' or CTRL - do nothing
+        if event.key not in ('n', 'p', 'control'):
+            return
+        # If the key pressed was 'n' - increment/next datapoint
+        if event.key == 'n':
+            inc = 1
+        # If it was 'p' - decrement/previous datapoint
+        if event.key == 'p':
+            inc = -1
 
-	# If the user releases the CTRL key
-	def on_release(self, event):
-		# Checks if the CTRL-key was released and sets the variable
-		if event.key == 'control':
-			self.ctrl_on = False
-		else:
-			return
+        if event.key == 'control':
+            self.ctrl_on = True
+        else:
 
-    # If the user picks an object/point per click
-	def on_pick(self, event):
-		# Checks the lenght of the event.ind (how much points are selected)
-		N = len(event.ind)
-		# If nothing was selected - exits function
-		if not N:
-			return True
-		# If multiple points were selected (overlapping of the circles) - informs
-		# the user and exits function - needs to exit function, because not a 
-		# unique datapoints can be (or was) selected - so no informations can
-		# be displayed - also throws an exception/error!
-		if N > 1:
-			print "Multiple objects lie within selection range. Zoome in to select a single object!"
-			return True
+            # The new index is the old one plus or minus 1
+            self.lastind += inc
+            # Clips the values, so that the index is always in the range of the array.
+            # E.g. no negative values or values greater than the maximum number of elements
+            # in the array are allowed!
+            # Updates the variable and calls the update function
+            self.lastind = np.clip(self.lastind, 0, len(self.c) - 1)
+            self.update()
 
-	    # Gets the location of that click
-		x = event.mouseevent.xdata
-		y = event.mouseevent.ydata
+    # If the user releases the CTRL key
+    def on_release(self, event):
+        # Checks if the CTRL-key was released and sets the variable
+        if event.key == 'control':
+            self.ctrl_on = False
+        else:
+            return
 
-		# Calculates the distance - hypothenuse
-		distances = np.hypot(x - self.c[event.ind[0]], y - self.d[event.ind[0]])
-		# Returns the indices of the minimum values along an axis
-		indmin = distances.argmin()
-		# Gets the data index of the selected data
-		dataind = event.ind[indmin]
+            # If the user picks an object/point per click
 
-		# If CTRL is pressed
-		if self.ctrl_on == True:
-			# Sets the index of the data which should be removed
-			self.remi = dataind
-		else:
-			# Updates the variable if no change was made
-			self.lastind = dataind
+    def on_pick(self, event):
+        # Checks the lenght of the event.ind (how much points are selected)
+        N = len(event.ind)
+        # If nothing was selected - exits function
+        if not N:
+            return True
+        # If multiple points were selected (overlapping of the circles) - informs
+        # the user and exits function - needs to exit function, because not a
+        # unique datapoints can be (or was) selected - so no informations can
+        # be displayed - also throws an exception/error!
+        if N > 1:
+            print
+            "Multiple objects lie within selection range. Zoome in to select a single object!"
+            return True
 
-		# Calls the update function and sets the removal variable afterwards
-		self.update()
-		self.remi = -1
+            # Gets the location of that click
+        x = event.mouseevent.xdata
+        y = event.mouseevent.ydata
 
-	# Updating the plot
-	def update(self):
-		# Checks if the lastindex variable exist - if not exits function
-		if self.lastind is None:
-			return
+        # Calculates the distance - hypothenuse
+        distances = np.hypot(x - self.c[event.ind[0]], y - self.d[event.ind[0]])
+        # Returns the indices of the minimum values along an axis
+        indmin = distances.argmin()
+        # Gets the data index of the selected data
+        dataind = event.ind[indmin]
 
-		# If a point has to be removed
-		if self.remi != -1:
+        # If CTRL is pressed
+        if self.ctrl_on == True:
+            # Sets the index of the data which should be removed
+            self.remi = dataind
+        else:
+            # Updates the variable if no change was made
+            self.lastind = dataind
 
-			# Replaces the corresponding point with a NaN (Not-a-Number) entry
-			self.a[self.remi] = np.nan
-			self.b[self.remi] = np.nan
-			self.c[self.remi] = np.nan
-			self.d[self.remi] = np.nan
+        # Calls the update function and sets the removal variable afterwards
+        self.update()
+        self.remi = -1
 
-			# Clears all axis for new plotting
-			ax1.cla()
-			ax2.cla()
-			ax3.cla()
-			ax4.cla()
+    # Updating the plot
+    def update(self):
+        # Checks if the lastindex variable exist - if not exits function
+        if self.lastind is None:
+            return
 
-			# Plots every point
-			ax1.plot(self.c, self.d, 'xr', picker=5)  
-			ax2.plot(self.a, self.b, 'xr', picker=5)  
-			ax3.plot(self.c, self.b, 'xr', picker=5)  
-			ax4.plot(self.d, self.b, 'xr', picker=5)  
-			# Also initializes the text and so on...
-			self.init_axis()
+        # If a point has to be removed
+        if self.remi != -1:
 
-		else:
-			# Sets the local variable to the last index
-			dataind = self.lastind
+            # Replaces the corresponding point with a NaN (Not-a-Number) entry
+            self.a[self.remi] = np.nan
+            self.b[self.remi] = np.nan
+            self.c[self.remi] = np.nan
+            self.d[self.remi] = np.nan
 
-			# Sets the circles of the selected objects to True
-			self.selected1.set_visible(True)
-			# Sets the circle to the selected dataindex (x- and y-position of the dataindex)
-			self.selected1.set_data(c[dataind], d[dataind])
-			self.selected2.set_visible(True)
-			self.selected2.set_data(a[dataind], b[dataind])
-			self.selected3.set_visible(True)
-			self.selected3.set_data(c[dataind], b[dataind])
-			self.selected4.set_visible(True)
-			self.selected4.set_data(d[dataind], b[dataind])
+            # Clears all axis for new plotting
+            ax1.cla()
+            ax2.cla()
+            ax3.cla()
+            ax4.cla()
 
-			# Generates a string for the text
-			name1 = header[2] + ' : ' + str(c[dataind]) + ' ; ' + header[3] + ' : ' + str(d[dataind])
-			name2 = header[0] + ' : ' + str(a[dataind]) + ' ; ' + header[1] + ' : ' + str(b[dataind])
-			name3 = header[2] + ' : ' + str(c[dataind]) + ' ; ' + header[1] + ' : ' + str(b[dataind])
-			name4 = header[3] + ' : ' + str(d[dataind]) + ' ; ' + header[1] + ' : ' + str(b[dataind])
+            # Plots every point
+            ax1.plot(self.c, self.d, 'xr', picker=5)
+            ax2.plot(self.a, self.b, 'xr', picker=5)
+            ax3.plot(self.c, self.b, 'xr', picker=5)
+            ax4.plot(self.d, self.b, 'xr', picker=5)
+            # Also initializes the text and so on...
+            self.init_axis()
 
-			# Sets the textname
-			self.text1.set_text(name1)
-			self.text2.set_text(name2)
-			self.text3.set_text(name3)
-			self.text4.set_text(name4)
-		# Redraws the figure
-		fig.canvas.draw()
+        else:
+            # Sets the local variable to the last index
+            dataind = self.lastind
+
+            # Sets the circles of the selected objects to True
+            self.selected1.set_visible(True)
+            # Sets the circle to the selected dataindex (x- and y-position of the dataindex)
+            self.selected1.set_data(c[dataind], d[dataind])
+            self.selected2.set_visible(True)
+            self.selected2.set_data(a[dataind], b[dataind])
+            self.selected3.set_visible(True)
+            self.selected3.set_data(c[dataind], b[dataind])
+            self.selected4.set_visible(True)
+            self.selected4.set_data(d[dataind], b[dataind])
+
+            # Generates a string for the text
+            name1 = header[2] + ' : ' + str(c[dataind]) + ' ; ' + header[3] + ' : ' + str(d[dataind])
+            name2 = header[0] + ' : ' + str(a[dataind]) + ' ; ' + header[1] + ' : ' + str(b[dataind])
+            name3 = header[2] + ' : ' + str(c[dataind]) + ' ; ' + header[1] + ' : ' + str(b[dataind])
+            name4 = header[3] + ' : ' + str(d[dataind]) + ' ; ' + header[1] + ' : ' + str(b[dataind])
+
+            # Sets the textname
+            self.text1.set_text(name1)
+            self.text2.set_text(name2)
+            self.text3.set_text(name3)
+            self.text4.set_text(name4)
+        # Redraws the figure
+        fig.canvas.draw()
+
 
 # =======================================================================================
 # Checks if there are enough input parameters; else exits
 if (len(sys.argv) < 1):
-	print "Usage", str(sys.argv[0]), "<FILE>"
-	print "E.g.: /str(sys.argv[0]) file.dat"
-	sys.exit(1)
+    print
+    "Usage", str(sys.argv[0]), "<FILE>"
+    print
+    "E.g.: /str(sys.argv[0]) file.dat"
+    sys.exit(1)
 
 # Checks if file exists
 if not (os.path.isfile(sys.argv[1])):
-	print "File does not exist!"
-	sys.exit(2)
+    print
+    "File does not exist!"
+    sys.exit(2)
 
 # Defines the lists for plotting
 a = list()
@@ -302,28 +308,29 @@ header = header.split(',')
 
 # Reads line by line of the file
 for line in f:
-	# Gets the line up to the line-seperator
-	line = line.strip()
-	# Gets the column from the current line, seperated by ','
-	column = line.split(',')
-	# Adds the value to the list
-	a.append(float(column[0]))
-	b.append(float(column[1]))
-	c.append(float(column[2]))
-	d.append(float(column[3]))
+    # Gets the line up to the line-seperator
+    line = line.strip()
+    # Gets the column from the current line, seperated by ','
+    column = line.split(',')
+    # Adds the value to the list
+    a.append(float(column[0]))
+    b.append(float(column[1]))
+    c.append(float(column[2]))
+    d.append(float(column[3]))
 
 # Close file
 f.close()
 
 # ---------------------------------------------------------------------------------------
 # Defines a figure for plotting and adjusts some parameters
-fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16,9))
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 9))
 fig.canvas.set_window_title('Overview')
-plt.suptitle("Overview - click on a data point to get more information - press 'n' or 'p' to go through the data points")
+plt.suptitle(
+    "Overview - click on a data point to get more information - press 'n' or 'p' to go through the data points")
 
 # Generates the 'line' element - used for selection function - with a picker of 5
 # Picker: range of pixels around the datapoint for selecting this specific point
-ax1.plot(c, d, 'xr', picker=5)  
+ax1.plot(c, d, 'xr', picker=5)
 # Labels the axes
 ax1.set_xlabel(header[2])
 ax1.set_ylabel(header[3])
