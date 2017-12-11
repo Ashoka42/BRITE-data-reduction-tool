@@ -23,8 +23,8 @@
 #				A-6020 Innsbruck
 # Date:			22/08/2016
 # Version:		3.0
-# 
-# Description:	This script decorelates BRITE-data. The	user can choose between 
+#
+# Description:	This script decorelates BRITE-data. The	user can choose between
 #				decorrelation of temperature, x- and y-center.
 #				The modified magnitude will be written (incl. HJD for unique
 #				identification) to the stdout.
@@ -37,7 +37,7 @@
 # Input:		ASCII-file with comma-seperator ','. The input needs to have at least
 #				five columns. (HJD, magnitude, x, y and temperature)
 #
-# Output:		The output is the HJD with the corresponding magnitude written to 
+# Output:		The output is the HJD with the corresponding magnitude written to
 #				stderr! This has to be done to get not into conflict with the 'print'
 #				command, which directs its output to stdout
 #
@@ -73,16 +73,13 @@ def fun(x, y):
 # =======================================================================================
 # Checks if there are enough input parameters; else exits
 if (len(sys.argv) < 1):
-    print
-    "Usage", str(sys.argv[0]), "<FILE>"
-    print
-    "E.g.: /str(sys.argv[0]) file.dat"
+    print("Usage", str(sys.argv[0]), "<FILE>")
+    print("E.g.: /str(sys.argv[0]) file.dat")
     sys.exit(1)
 
 # Checks if file exists
 if not (os.path.isfile(sys.argv[1])):
-    print
-    "File does not exist!"
+    print("File does not exist!")
     sys.exit(2)
 
 # Defines the lists for calculation
@@ -128,14 +125,10 @@ while var:
     ycorr = tmp[3] * tmp[3] * 100
 
     # Prints the result of the correlation coefficient value
-    print
-    "Correlation coefficient - higher value means stronger correlation (in percent)"
-    print
-    "T-corr:  %7.5f" % (tcorr)
-    print
-    "y-corr:  %7.5f" % (ycorr)
-    print
-    "x-corr:  %7.5f" % (xcorr)
+    print("Correlation coefficient - higher value means stronger correlation (in percent)")
+    print("T-corr:  %7.5f" % (tcorr))
+    print("y-corr:  %7.5f" % (ycorr))
+    print("x-corr:  %7.5f" % (xcorr))
 
     # Defines a figure for plotting and adjusts some parameters
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 9))
@@ -164,10 +157,8 @@ while var:
     plt.show()
 
     # Asks the user what to do...
-    print
-    "What do you want to do?"
-    print
-    "Enter: '1' - temperature decorrelation, '2' - y decorrelation, '3' x - decorrelation, '4' QUIT"
+    print("What do you want to do?")
+    print("Enter: '1' - temperature decorrelation, '2' - y decorrelation, '3' x - decorrelation, '4' QUIT")
 
     # Gets the user input
     decision = raw_input("> ")
@@ -194,8 +185,7 @@ while var:
 
     # Informs the user that the input was invalid
     else:
-        print
-        "Input was not valid! Please try again."
+        print("Input was not valid! Please try again.")
 
 # ---------------------------------------------------------------------------------------
 # Exit

@@ -23,7 +23,7 @@
 #				A-6020 Innsbruck
 # Date:			22/08/2016
 # Version:		3.0
-# 
+#
 # Description:	This script decorelates BRITE-data in chopping mode. The
 #				user can choose between decorrelation of temperature, x- and y-
 #				center and x1-, x2-, y1-, y2- center for chopping mode.
@@ -38,7 +38,7 @@
 # Input:		ASCII-file with comma-seperator ','. The input needs to have at least
 #				five columns. (HJD, magnitude, x, y and temperature)
 #
-# Output:		The output is the HJD with the corresponding magnitude written to 
+# Output:		The output is the HJD with the corresponding magnitude written to
 #				stderr! This has to be done to get not into conflict with the 'print'
 #				command, which directs its output to stdout
 #
@@ -62,6 +62,7 @@ def decor(x, y):
     # Generates a new array, which multiplies k to the whole array x
     TMP = map(lambda x: x * k, x)
     # Returns the decorrelated array (y - TMP) (subtraction)
+    print("HELLO2")
     return map(lambda x, y: x - y, y, TMP)
 
 
@@ -74,16 +75,13 @@ def fun(x, y):
 # =======================================================================================
 # Checks if there are enough input parameters; else exits
 if (len(sys.argv) < 1):
-    print
-    "Usage", str(sys.argv[0]), "<FILE>"
-    print
-    "E.g.: /str(sys.argv[0]) file.dat"
+    print("Usage", str(sys.argv[0]), "<FILE>")
+    print("E.g.: /str(sys.argv[0]) file.dat")
     sys.exit(1)
 
 # Checks if file exists
 if not (os.path.isfile(sys.argv[1])):
-    print
-    "File does not exist!"
+    print("File does not exist!")
     sys.exit(2)
 
 # Defines the lists for calculation
@@ -131,7 +129,7 @@ xy = np.array(xy)
 xy = xy.T
 
 # Needs to calculate a border to distinguish the chopped data points
-# Chopping may not always be aligned in x- or y-direction only, but in a combindation 
+# Chopping may not always be aligned in x- or y-direction only, but in a combindation
 # of both. So chopped data may be 'diagonal'
 # To distinguish them properly, an algorithm for detection is written here
 # Calculates the mean value of the x- and y-center
@@ -158,6 +156,7 @@ f = np.poly1d([-1 / k, d])
 # ---------------------------------------------------------------------------------------
 # Loops through until user stops - result is okay
 while var:
+    print("Entering loop")
 
     # Splits the data due to chopping mode - according to the curve derived above
     for i in range(0, len(xy[0])):
@@ -189,22 +188,14 @@ while var:
     y2corr = tmp[2] * tmp[2] * 100
 
     # Prints the result of the correlation coefficient value
-    print
-    "Correlation coefficient - higher value means stronger correlation (in percent)"
-    print
-    "T-corr:  %7.5f" % (tcorr)
-    print
-    "y-corr:  %7.5f" % (ycorr)
-    print
-    "y1-corr: %7.5f" % (y1corr)
-    print
-    "y2-corr: %7.5f" % (y2corr)
-    print
-    "x-corr:  %7.5f" % (xcorr)
-    print
-    "x1-corr: %7.5f" % (x1corr)
-    print
-    "x2-corr: %7.5f" % (x2corr)
+    print("Correlation coefficient - higher value means stronger correlation (in percent)")
+    print("T-corr:  %7.5f" % (tcorr))
+    print("y-corr:  %7.5f" % (ycorr))
+    print("y1-corr: %7.5f" % (y1corr))
+    print("y2-corr: %7.5f" % (y2corr))
+    print("x-corr:  %7.5f" % (xcorr))
+    print("x1-corr: %7.5f" % (x1corr))
+    print("x2-corr: %7.5f" % (x2corr))
 
     # Defines a figure for plotting and adjusts some parameters
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 9))
@@ -235,18 +226,18 @@ while var:
     plt.show()
 
     # Asks the user what to do...
-    print
-    "What do you want to do?"
-    print
-    "Enter: '1' - temperature decorrelation, '2' - y decorrelation, '3' y1 - decorrelation, '4' y2 - decorrelation, '5' x - decorrelation '6' x1 - decorrelation, '7' x2 - decorrelation, '8' QUIT"
+    print("What do you want to do?")
+    print("Enter: '1' - temperature decorrelation, '2' - y decorrelation, '3' y1 - decorrelation, '4' y2 - decorrelation, '5' x - decorrelation '6' x1 - decorrelation, '7' x2 - decorrelation, '8' QUIT")
 
     # Gets the user input
-    decision = raw_input("> ")
+    decision = input("> ")
+    print(decision)
     # Checks the input and does the decorrelation
     if decision == "1":
         mag = decor(t, mag)
 
     elif decision == "2":
+        print("HELLO")
         mag = decor(xy[1], mag)
 
     # If a partial decorrelation is done
@@ -320,8 +311,7 @@ while var:
 
     # Informs the user that the input was invalid
     else:
-        print
-        "Input was not valid! Please try again."
+        print("Input was not valid! Please try again.")
 
     # Flushes/resets the arrays
     del x1[:]
