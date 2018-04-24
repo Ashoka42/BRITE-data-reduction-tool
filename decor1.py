@@ -61,7 +61,7 @@ def decor(x, y):
     # Generates a new array, which multiplies k to the whole array x
     TMP = map(lambda x: x * k, x)
     # Returns the decorrelated array (y - TMP) (subtraction)
-    return map(lambda x, y: x - y, y, TMP)
+    return list(map(lambda x, y: x - y, y, TMP))
 
 
 # Defines a function for calculating and returning a ploynomial

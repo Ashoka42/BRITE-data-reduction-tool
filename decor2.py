@@ -62,8 +62,7 @@ def decor(x, y):
     # Generates a new array, which multiplies k to the whole array x
     TMP = map(lambda x: x * k, x)
     # Returns the decorrelated array (y - TMP) (subtraction)
-    print("HELLO2")
-    return map(lambda x, y: x - y, y, TMP)
+    return list(map(lambda x, y: x - y, y, TMP))
 
 
 # Defines a function for calculating and returning a ploynomial
@@ -231,13 +230,11 @@ while var:
 
     # Gets the user input
     decision = input("> ")
-    print(decision)
     # Checks the input and does the decorrelation
     if decision == "1":
         mag = decor(t, mag)
 
     elif decision == "2":
-        print("HELLO")
         mag = decor(xy[1], mag)
 
     # If a partial decorrelation is done
@@ -286,6 +283,7 @@ while var:
 
     elif decision == "7":
         mag2 = decor(x2, mag2)
+
         offset = np.mean(mag1) - np.mean(mag2)
         j = 0
         for i in range(0, len(mag)):
