@@ -139,7 +139,11 @@ if awk --version 2>&1 | grep -q "GNU Awk"
 then
 	# Awk is used per default -> no problem arise
 	rawk=awk
-
+elif gawk --version 2>&1 | grep -q "GNU Awk"
+then
+		# Awk is used per default -> no problem arise
+		echo "Using gnu awk on mac‚"
+		rawk=gawk
 elif awk -Wv 2>&1 | grep -q "mawk"
 then
 	# Mawk is used per default as 'awk'
